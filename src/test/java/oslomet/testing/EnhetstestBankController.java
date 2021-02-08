@@ -9,6 +9,7 @@ import oslomet.testing.API.BankController;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Models.Konto;
 import oslomet.testing.Models.Kunde;
+import oslomet.testing.Models.Transaksjon;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 
 import java.util.ArrayList;
@@ -98,6 +99,41 @@ public class EnhetstestBankController {
         List<Konto> resultat = bankController.hentKonti();
 
         // assert
+        assertNull(resultat);
+    }
+
+    @Test
+    public void hentTransaksjoner_loggetInn(){
+        // arrange
+
+        Transaksjon transaksjon1= new Transaksjon(1, "01000000", 700.0, "2021-01-01", "Penger sendt", null, "02000000");
+        Transaksjon transaksjon2= new Transaksjon(2, "02000000", 700.0, "2021-01-01", "Penger sendt tilbake", null, "01000000");
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+        transaksjonList.add(transaksjon1);
+        transaksjonList.add(transaksjon2);
+
+        Konto konto1= new Konto("01010112345", "01000000", 1500.0, "Brukskonto", "NOK", transaksjonList);
+
+        when(sjekk.loggetInn()).thenReturn("01010112345");
+        when(repository.hentTransaksjoner(anyString(),anyString(),anyString())).thenReturn(konto1);
+        // act
+
+        Konto resultat = bankController.hentTransaksjoner("01000000","2021-01-01","2100-01-01");
+
+        // assert
+        assertEquals(konto1,resultat);
+    }
+
+    @Test
+    public void hentTransaksjoner_ikkeloggetInn(){
+        // arrange
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+
+        Konto resultat = bankController.hentTransaksjoner("","","");
+        // assert
+
         assertNull(resultat);
     }
 }
