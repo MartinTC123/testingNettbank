@@ -136,5 +136,41 @@ public class EnhetstestBankController {
 
         assertNull(resultat);
     }
+
+    @Test
+    public void hentSaldi_loggetInn(){
+        // arrange
+
+        List<Konto> kontoList = new ArrayList<>();
+        Konto konto1= new Konto("11139931758", "01010110523", 11660.0, "Brukskonto", "NOK",null);
+        Konto konto2= new Konto("11139931758", "01310111678", 10.0, "Brukskonto", "NOK",null);
+
+        kontoList.add(konto1);
+        kontoList.add(konto2);
+
+        when(sjekk.loggetInn()).thenReturn("11139931758");
+        when(repository.hentSaldi(anyString())).thenReturn(kontoList);
+        // act
+
+        List<Konto> resultat = bankController.hentSaldi();
+
+        // assert
+
+        assertEquals(kontoList, resultat);
+    }
+
+    @Test
+    public void hentSaldi_ikkeLoggetInn(){
+        // arrange
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+
+        List<Konto> resultat = bankController.hentSaldi();
+
+        // assert
+
+        assertNull(resultat);
+    }
 }
 
