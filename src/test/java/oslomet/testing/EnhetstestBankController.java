@@ -132,7 +132,7 @@ public class EnhetstestBankController {
         when(sjekk.loggetInn()).thenReturn(null);
         // act
 
-        Konto resultat = bankController.hentTransaksjoner("","","");
+        Konto resultat = bankController.hentTransaksjoner("01000000","","");
         // assert
 
         assertNull(resultat);
@@ -181,7 +181,7 @@ public class EnhetstestBankController {
         Transaksjon transaksjon1= new Transaksjon(1, "01010110523", 700.0, "2021-01-01", "Penger sendt", null, "02000000");
 
         when(sjekk.loggetInn()).thenReturn("11139931758");
-        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK!");
+        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK");
         // act
 
         String resultat = bankController.registrerBetaling(transaksjon1);
@@ -201,7 +201,7 @@ public class EnhetstestBankController {
         String resultat = bankController.registrerBetaling(null);
         // assert
 
-        assertNull(resultat, "Feil");
+        assertNull(resultat);
     }
 
     @Test
@@ -240,6 +240,42 @@ public class EnhetstestBankController {
     }
 
     @Test
+    public void utforBetaling_loggetInn(){
+        // arrange
+
+        List<Transaksjon> liste= new ArrayList<>();
+        Transaksjon transaksjon1 = new Transaksjon(1, "01010110523", 800.0, "2021-01-01", "Overføring", null, "02000000");
+        Transaksjon transaksjon2 = new Transaksjon(2, "01010110523", 850.0, "2021-01-01", "Overføring", null, "02000000");
+
+        liste.add(transaksjon1);
+        liste.add(transaksjon2);
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+        when(repository.utforBetaling(anyInt())).thenReturn("OK");
+        when(repository.hentBetalinger(anyString())).thenReturn(liste);
+        // act
+
+        List<Transaksjon> resultat = bankController.utforBetaling(1);
+
+        // assert
+
+        assertEquals(liste, resultat);
+    }
+
+    @Test
+    public void utforBetaling_ikkeLoggetInn(){
+        // arrange
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+
+        List<Transaksjon> resultat= bankController.utforBetaling(1);
+        // assert
+
+        assertNull(resultat);
+    }
+
+    @Test
     public void endre_loggetInn(){
         // arrange
 
@@ -248,7 +284,7 @@ public class EnhetstestBankController {
                 "Asker", "22224444", "HeiHei");
 
         when(sjekk.loggetInn()).thenReturn("01010110523");
-        when(repository.endreKundeInfo(kunde1)).thenReturn("OK!");
+        when(repository.endreKundeInfo(kunde1)).thenReturn("OK");
         // act
 
         String resultat = bankController.endre(kunde1);
@@ -268,7 +304,7 @@ public class EnhetstestBankController {
 
         // assert
 
-        assertNull(resultat, "Feil");
+        assertNull(resultat);
     }
 }
 
