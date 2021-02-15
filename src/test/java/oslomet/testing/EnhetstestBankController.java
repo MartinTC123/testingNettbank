@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -174,6 +175,36 @@ public class EnhetstestBankController {
     }
 
     @Test
+    public void registrerBetaling_loggetInn(){
+        // arrange
+
+        Transaksjon transaksjon1= new Transaksjon(1, "01010110523", 700.0, "2021-01-01", "Penger sendt", null, "02000000");
+
+        when(sjekk.loggetInn()).thenReturn("11139931758");
+        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK!");
+        // act
+
+        String resultat = bankController.registrerBetaling(transaksjon1);
+
+        // assert
+
+        assertEquals("OK!", resultat);
+    }
+
+    @Test
+    public void registrerBetaling_ikkeLoggetInn(){
+        // arrange
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+
+        String resultat = bankController.registrerBetaling(null);
+        // assert
+
+        assertNull(resultat, "FEIL!");
+    }
+
+    @Test
     public void hentBetalinger_loggetInn(){
         // arrange
 
@@ -206,6 +237,38 @@ public class EnhetstestBankController {
      // assert
 
      assertNull(resultat);
+    }
+
+    @Test
+    public void endre_loggetInn(){
+        // arrange
+
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+        when(repository.endreKundeInfo(kunde1)).thenReturn("OK!");
+        // act
+
+        String resultat = bankController.endre(kunde1);
+        // assert
+
+        assertEquals("OK!", resultat);
+    }
+
+    @Test
+    public void endre_ikkeLoggetInn(){
+        // arrange
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+
+        String resultat = bankController.endre(null);
+
+        // assert
+
+        assertNull(resultat, "FEIL!");
     }
 }
 
