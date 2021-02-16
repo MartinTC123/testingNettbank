@@ -12,6 +12,7 @@ import oslomet.testing.Sikkerhet.Sikkerhet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class EnhetstestAdminKundeController {
 
@@ -26,11 +27,13 @@ public class EnhetstestAdminKundeController {
 
     @Test
     public void test_lagreKundeOK(){
-        Kunde kunde1 = new Kunde("01010101010", "lene", "jensen",
+        Kunde kunde1 = new Kunde("123456789", "lene", "jensen",
                 "osloveien 82","3270",
                 "asker","22224444","lene123");
 
-        Mockito.when(repository.registrerKunde((any(Kunde.class)))).thenReturn("OK");
+        when(sikkerhet.loggetInn()).thenReturn("123456789");
+
+        when(repository.registrerKunde(any(Kunde.class))).thenReturn("OK");
 
         String resultat = kundeController.lagreKunde(kunde1);
 
@@ -39,14 +42,14 @@ public class EnhetstestAdminKundeController {
 
     @Test
     public void test_lagreKundeFeil(){
-        Kunde kunde1 = new Kunde("01010101010", "lene", "jensen",
+        Kunde kunde1 = new Kunde("123456789", "lene", "jensen",
                 "osloveien 82","3270",
                 "asker","22224444","lene123");
 
-        Mockito.when(repository.registrerKunde((any(Kunde.class)))).thenReturn("Feil");
+        when(sikkerhet.loggetInn()).thenReturn(null);
 
         String resultat = kundeController.lagreKunde(kunde1);
 
-        assertEquals("Feil",resultat);
+        assertEquals("Ikke logget inn",resultat);
     }
 }
