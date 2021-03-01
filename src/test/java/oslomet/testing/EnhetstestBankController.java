@@ -228,15 +228,15 @@ public class EnhetstestBankController {
 
     @Test
     public void hentBetalinger_ikkeLoggetInn(){
-     // arrange
+        // arrange
 
-     when(sjekk.loggetInn()).thenReturn(null);
-     // act
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
 
-     List<Transaksjon> resultat= bankController.hentBetalinger();
-     // assert
+        List<Transaksjon> resultat= bankController.hentBetalinger();
+        // assert
 
-     assertNull(resultat);
+        assertNull(resultat);
     }
 
     @Test
