@@ -1,6 +1,6 @@
 package oslomet.testing;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,29 +13,29 @@ import oslomet.testing.Sikkerhet.Sikkerhet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestAdminKontoController {
+
     @InjectMocks
-    //denne skal testes
+    // denne skal testes
     private AdminKontoController adminKontoController;
 
     @Mock
-    //denne skal Mock'es
+    // denne skal Mock'es
     private AdminRepository repository;
 
     @Mock
-    //denne skal Mock'es
+    // denne skal Mock'es
     private Sikkerhet sjekk;
 
     @Test
-    public void hentAlleKonti_LoggetInn(){
-        //Arrange
+    public void HentAlleKonti_LoggetInn() {
+//Arrange
         List<Konto> konti = new ArrayList<>();
         Konto konto1 = new Konto("105010123456", "01010110523",
                 720, "Lønnskonto", "NOK", null);
@@ -44,7 +44,7 @@ public class EnhetstestAdminKontoController {
         konti.add(konto1);
         konti.add(konto2);
 
-        when(sjekk.loggetInn()).thenReturn("105010123456");
+        when(sjekk.loggetInn()).thenReturn("01010110523");
 
         when(repository.hentAlleKonti()).thenReturn(konti);
 
@@ -53,10 +53,10 @@ public class EnhetstestAdminKontoController {
 
         //assert
         assertEquals(konti,resultat);
-
     }
+
     @Test
-    public void hentAlleKonti_IkkeLoggetInn(){
+    public void hentAlleKonti_IkkeLoggetInn() {
         //arrange
         when(sjekk.loggetInn()).thenReturn(null);
 
@@ -64,10 +64,25 @@ public class EnhetstestAdminKontoController {
         List<Konto> resultat =adminKontoController.hentAlleKonti();
 
         assertNull(resultat);
-
     }
+
     @Test
-    public void registrerKonto_LoggetInn(){
+    public void registrerKonto_IkkeLoggetInn()  {
+        //arrange
+        Konto konto = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", null);
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        //act
+        String resultat = adminKontoController.registrerKonto(konto);
+
+        //assert
+        assertEquals("Ikke innlogget",resultat);
+    }
+
+    @Test
+    public void registrerKonto_LoggetInn()  {
         //arrange
         Konto konto = new Konto("105010123456", "01010110523",
                 720, "Lønnskonto", "NOK", null);
@@ -81,24 +96,8 @@ public class EnhetstestAdminKontoController {
 
         //assert
         assertEquals("OK",resultat);
-
-
     }
-    @Test
-    public void registrerKonto_IkkeLoggetInn(){
-        //arrange
-        Konto konto = new Konto("105010123456", "01010110523",
-                720, "Lønnskonto", "NOK", null);
 
-        when(sjekk.loggetInn()).thenReturn(null);
-
-        //act
-        String resultat = adminKontoController.registrerKonto(konto);
-
-        //assert
-        assertEquals("Ikke innlogget",resultat);
-
-    }
     @Test
     public void endreKonto_LoggetInn(){
         //arrange
@@ -114,8 +113,8 @@ public class EnhetstestAdminKontoController {
 
         //assert
         assertEquals("OK",resultat);
-
     }
+
     @Test
     public void endreKonto_IkkeLoggetInn(){
         //arrange
@@ -129,10 +128,10 @@ public class EnhetstestAdminKontoController {
 
         //assert
         assertEquals("Ikke innlogget", resultat);
-
     }
+
     @Test
-    public void slettKonto_LoggetInn(){
+    public void slettKonto_loggetInn(){
         //arrange
         String kontonummer = "01010110523";
 
@@ -144,11 +143,11 @@ public class EnhetstestAdminKontoController {
         String resultat = adminKontoController.slettKonto(kontonummer);
 
         //assert
-        assertEquals("ok",resultat);
-
+        assertEquals("OK",resultat);
     }
+
     @Test
-    public void slettKonto_IkkeLoggetInn(){
+    public void slettKonto_ikkeLoggetInn(){
         //arrange
         String kontonummer= "01010110523";
 
@@ -159,8 +158,8 @@ public class EnhetstestAdminKontoController {
 
         //assert
         assertEquals("Ikke innlogget",resultat);
-
     }
 
-
 }
+
+
