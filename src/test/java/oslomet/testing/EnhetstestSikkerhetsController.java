@@ -1,11 +1,15 @@
 package oslomet.testing;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+import org.springframework.mock.web.MockHttpSession;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 
@@ -16,9 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestSikkerhetsController {
@@ -29,7 +36,7 @@ public class EnhetstestSikkerhetsController {
     private BankRepository repository;
 
     @Mock
-    private HttpSession httpSession;
+    private MockHttpSession httpSession;
 
     @Test
     public void sjekkLoggInn_OK(){
@@ -83,6 +90,24 @@ public class EnhetstestSikkerhetsController {
 
     @Test
     public void loggUt(){
+        Map<String,Object> attributes = new HashMap<String,Object>();
+
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return null;
+            }
+        }).when(httpSession).getAttribute(anyString());
+
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = (String) invocation.getArguments()[0];
+                Object value = invocation.getArguments()[1];
+                attributes.put(key, value);
+                return null;
+            }
+        }).when(httpSession).setAttribute(anyString(), any());
         // arrange
 
         // act
@@ -120,22 +145,57 @@ public class EnhetstestSikkerhetsController {
 
     @Test
     public void loggetInn_innlogget(){
-        // arrange
+        Map<String,Object> attributes = new HashMap<String,Object>();
 
-        when(httpSession.getAttribute(anyString())).thenReturn("Innlogget");
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return null;
+            }
+        }).when(httpSession).getAttribute(anyString());
+
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = (String) invocation.getArguments()[0];
+                Object value = invocation.getArguments()[1];
+                attributes.put(key, value);
+                return null;
+            }
+        }).when(httpSession).setAttribute(anyString(), any());
+        // arrange
+        httpSession.setAttribute("Innlogget", "01010110523");
+
         // act
 
         String resultat = sikkerhet.loggetInn();
         // assert
 
-        assertEquals("Innlogget", resultat);
+        assertEquals("01010110523", resultat);
     }
 
     @Test
     public void loggetInn_null(){
-        // arrange
+        Map<String,Object> attributes = new HashMap<String,Object>();
 
-        when(httpSession.getAttribute(anyString())).thenReturn(null);
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return null;
+            }
+        }).when(httpSession).getAttribute(anyString());
+
+        doAnswer(new Answer<Object>(){
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = (String) invocation.getArguments()[0];
+                Object value = invocation.getArguments()[1];
+                attributes.put(key, value);
+                return null;
+            }
+        }).when(httpSession).setAttribute(anyString(), any());
+        // arrange
+        httpSession.setAttribute(null,null);
         // act
 
         String resultat = sikkerhet.loggetInn();
