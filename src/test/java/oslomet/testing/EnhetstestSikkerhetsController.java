@@ -29,6 +29,7 @@ import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestSikkerhetsController {
+
     @InjectMocks
     private Sikkerhet sikkerhet;
 
@@ -37,6 +38,29 @@ public class EnhetstestSikkerhetsController {
 
     @Mock
     private MockHttpSession httpSession;
+
+    @Before  // flyttet foran alle testene.
+    public void initSession() {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+
+        doAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = (String) invocation.getArguments()[0];
+                return attributes.get(key);
+            }
+        }).when(httpSession).getAttribute(anyString());
+
+        doAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = (String) invocation.getArguments()[0];
+                Object value = invocation.getArguments()[1];
+                attributes.put(key, value);
+                return null;
+            }
+        }).when(httpSession).setAttribute(anyString(), any());
+    }
 
     @Test
     public void sjekkLoggInn_OK(){
@@ -90,24 +114,7 @@ public class EnhetstestSikkerhetsController {
 
     @Test
     public void loggUt(){
-        Map<String,Object> attributes = new HashMap<String,Object>();
 
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return null;
-            }
-        }).when(httpSession).getAttribute(anyString());
-
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                String key = (String) invocation.getArguments()[0];
-                Object value = invocation.getArguments()[1];
-                attributes.put(key, value);
-                return null;
-            }
-        }).when(httpSession).setAttribute(anyString(), any());
         // arrange
 
         // act
@@ -121,20 +128,20 @@ public class EnhetstestSikkerhetsController {
     public void loggInnAdmin_loggetInn(){
         // arrange
 
-        when(sikkerhet.loggInnAdmin(anyString(),anyString())).thenReturn("Logget inn");
+        //when(sikkerhet.loggInnAdmin(anyString(),anyString())).thenReturn("Logget inn");
         // act
 
         String resultat = sikkerhet.loggInnAdmin("Per", "Hei1234");
 
         // assert
-        assertEquals("Logget inn", resultat);
+        assertEquals("Logget inn", resultat); // denne er ikke logget inn!
     }
 
     @Test
     public void loggInnAdmin_ikkeLoggetInn(){
         // arrange
 
-        when(sikkerhet.loggInnAdmin(anyString(), anyString())).thenReturn("Ikke logget inn");
+        // when(sikkerhet.loggInnAdmin(anyString(), anyString())).thenReturn("Ikke logget inn");
         // act
 
         String resultat = sikkerhet.loggInnAdmin("Per", "Hei1234");
@@ -145,25 +152,7 @@ public class EnhetstestSikkerhetsController {
 
     @Test
     public void loggetInn_innlogget(){
-        Map<String,Object> attributes = new HashMap<String,Object>();
 
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return null;
-            }
-        }).when(httpSession).getAttribute(anyString());
-
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                String key = (String) invocation.getArguments()[0];
-                Object value = invocation.getArguments()[1];
-                attributes.put(key, value);
-                return null;
-            }
-        }).when(httpSession).setAttribute(anyString(), any());
-        // arrange
         httpSession.setAttribute("Innlogget", "01010110523");
 
         // act
@@ -173,27 +162,19 @@ public class EnhetstestSikkerhetsController {
 
         assertEquals("01010110523", resultat);
     }
+    @Test
+    public void test_LoggetInn_1() {
+        // arrange
+        httpSession.setAttribute("Innlogget","12345678901");
+        // act
+        String resultat = sikkerhet.loggetInn();
+        // assert
+        assertEquals("12345678901", resultat);
+    }
 
     @Test
     public void loggetInn_null(){
-        Map<String,Object> attributes = new HashMap<String,Object>();
 
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return null;
-            }
-        }).when(httpSession).getAttribute(anyString());
-
-        doAnswer(new Answer<Object>(){
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                String key = (String) invocation.getArguments()[0];
-                Object value = invocation.getArguments()[1];
-                attributes.put(key, value);
-                return null;
-            }
-        }).when(httpSession).setAttribute(anyString(), any());
         // arrange
         httpSession.setAttribute(null,null);
         // act
