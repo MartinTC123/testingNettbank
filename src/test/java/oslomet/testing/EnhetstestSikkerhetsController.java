@@ -131,7 +131,7 @@ public class EnhetstestSikkerhetsController {
         //when(sikkerhet.loggInnAdmin(anyString(),anyString())).thenReturn("Logget inn");
         // act
 
-        String resultat = sikkerhet.loggInnAdmin("Per", "Hei1234");
+        String resultat = sikkerhet.loggInnAdmin("Admin", "Admin");
 
         // assert
         assertEquals("Logget inn", resultat); // denne er ikke logget inn!
