@@ -134,7 +134,7 @@ public class EnhetstestSikkerhetsController {
         String resultat = sikkerhet.loggInnAdmin("Admin", "Admin");
 
         // assert
-        assertEquals("Logget inn", resultat); // denne er ikke logget inn!
+        assertEquals("Logget inn", resultat); // denne er kun logget inn hvis bruker/passord er Admin!
     }
 
     @Test
