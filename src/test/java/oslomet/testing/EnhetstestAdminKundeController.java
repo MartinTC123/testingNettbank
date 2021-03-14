@@ -108,17 +108,14 @@ public class EnhetstestAdminKundeController {
 
     @Test
     public void endre_IkkeLoggetInn() {
-        //arrange
         Kunde kunde1 = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
         when(sikkerhet.loggetInn()).thenReturn(null);
 
-        //act
         String melding = kundeController.endre(kunde1);
 
-        //assert
         assertEquals("Ikke logget inn", melding);
     }
 
@@ -138,15 +135,13 @@ public class EnhetstestAdminKundeController {
 
     @Test
     public void slett_IkkeLoggetInn() {
-        //arrange
+
         String personnummer = "01010110523";
 
         when(sikkerhet.loggetInn()).thenReturn(null);
 
-
         String melding = kundeController.slett("01010110523");
 
-        //assert
         assertEquals("Ikke logget inn", melding);
     }
 
