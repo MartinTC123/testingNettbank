@@ -76,6 +76,19 @@ public class EnhetstestSikkerhetsController {
     }
 
     @Test
+    public void sjekkLoggInn_FeilPersonnrPassord(){
+        // arrange
+
+        when(repository.sjekkLoggInn("01010110523","HeiHeiHei")).thenReturn("Feil");
+        // act
+
+        String resultat = sikkerhet.sjekkLoggInn("01010110523", "HeiHeiHei");
+        // assert
+
+        assertEquals("Feil i personnummer eller passord", resultat);
+    }
+
+    @Test
     public void sjekkLoggInn_feilPersonnr(){
         // arrange
 
@@ -97,19 +110,6 @@ public class EnhetstestSikkerhetsController {
         // assert
 
         assertEquals("Feil i passord", resultat);
-    }
-
-    @Test
-    public void sjekkLoggInn_Feil(){
-        // arrange
-
-        when(repository.sjekkLoggInn(anyString(),anyString())).thenReturn("Feil i personnummer eller passord");
-        // act
-
-        String resultat = repository.sjekkLoggInn("01010110523", "HeiHei");
-        // assert
-
-        assertEquals("Feil i personnummer eller passord", resultat);
     }
 
     @Test
